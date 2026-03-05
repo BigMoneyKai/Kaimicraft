@@ -1,0 +1,13 @@
+# build output
+build/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+Makefile
+
+# binaries
+*.o
+*.a
+*.so
+*.exe
+*.out
