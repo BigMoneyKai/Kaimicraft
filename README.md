@@ -187,6 +187,18 @@ FATAL("Cannot create window");                 // 💥 Dark red + exit
 
 ---
 
+## 📚 Thirdparty libraries
+
+```
+thirdparty/
+├── glew/
+├── glfw/
+├── glm/
+└── stb/
+```
+
+---
+
 ## 📝 License
 
 MIT License — see [LICENSE](LICENSE) for details.GPL-3.0 License — see [LICENSE](LICENSE) for details.
