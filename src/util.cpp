@@ -43,7 +43,7 @@ void Util::inputControl(App* appPtr) {
         appPtr->camera.addPosY(flyUpSpeed); 
     }
    
-    // ===== ⭐ 鼠标视角（核心！！！）=====
+    // ===== ⭐ mouse vision =====
     double dx = appPtr->inputManager.mouse().deltaX();
     double dy = appPtr->inputManager.mouse().deltaY();
 
@@ -68,7 +68,7 @@ void Util::inputControl(App* appPtr) {
     double scrollY = appPtr->inputManager.mouse().scrollY();
     if (scrollY != 0.0) {
         appPtr->camera.addFov(-scrollY);
-        appPtr->camera.addFov(std::clamp(appPtr->camera.fov(), glm::radians(30.0f), glm::radians(90.0f)));
+        appPtr->camera.setFov(std::clamp(appPtr->camera.fov(), glm::radians(30.0f), glm::radians(150.0f)));
     }
 }
 
@@ -82,7 +82,7 @@ float Util::randomNum(float min, float max) {
     static std::random_device rd;
     static std::mt19937 gen(rd());
     
-    std::uniform_int_distribution<int> dist(min, max); 
+    std::uniform_real_distribution<float> dist(min, max); 
     return dist(gen);
 }
 
