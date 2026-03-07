@@ -2,8 +2,6 @@
 
 void App::init() {
     title = "Minecraft";
-    width = 0;
-    height = 0;
     isRunning  =false;
     
     drawLogo();
@@ -36,7 +34,7 @@ void App::init() {
     std::cout << '\n';
     
     INFO("-----Renderer initailizating-----");
-    renderer.init(width, height);
+    renderer.init();
     INFO("Renderer ready");
     std::cout << '\n';
 

@@ -3,7 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-void Renderer::init(int width, int height) {
+void Renderer::init() {
     meshes.emplace_back();
     meshes.back().init();
 

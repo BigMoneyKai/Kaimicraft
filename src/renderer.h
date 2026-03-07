@@ -13,7 +13,7 @@
 
 class Renderer {
 public:
-    void init(int width, int height);
+    void init();
     void display(Camera* camPtr, WindowManager* wmPtr);
     void display(Camera* camPtr, WindowManager* wmPtr, const std::vector<Mesh*>& meshesToDraw);
     void destroy();

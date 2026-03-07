@@ -5,7 +5,7 @@ void WindowManager::init(std::string title, DisplayMode display) {
         glfwTerminate();
         FATAL("GLFW initialization failed"); 
     }
-    INFO("GLFW version: ", glfwGetVersionString());
+    INFO("GLFW version: %s", glfwGetVersionString());
 
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

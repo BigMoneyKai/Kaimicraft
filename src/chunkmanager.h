@@ -36,8 +36,6 @@ private:
     int m_chunkY;
     int m_chunkZ;
 
-    BlockType m_blocks[chunkX][chunkY][chunkZ];
-
 private:
     struct ChunkCoord {
         int x;

@@ -1,11 +1,11 @@
 #include "inputmanager.h"
 
-static void keyCallback(GLFWwindow* w, int key, int sc, int action, int mods) {
+static void keyCallback(GLFWwindow* w, int key, int, int action, int) {
     auto* input = static_cast<InputManager*>(glfwGetWindowUserPointer(w));
     if (input) input->onKey(key, action);
 }
 
-static void mouseButtonCallback(GLFWwindow* w, int btn, int action, int mods) {
+static void mouseButtonCallback(GLFWwindow* w, int btn, int action, int) {
     auto* input = static_cast<InputManager*>(glfwGetWindowUserPointer(w));
     if (input) input->onMouseButton(btn, action);
 }
