@@ -1,204 +1,113 @@
 # 🌍 Kaimicraft
 
-A Minecraft-inspired voxel engine written in C++17 with OpenGL 3.3 Core Profile.
+A Minecraft-style voxel engine built with C++17 and OpenGL 3.3 Core Profile.
 
-![C++](https://img.shields.io/badge/C++-17-blue?logo=c%2B%2B)
-![OpenGL](https://img.shields.io/badge/OpenGL-3.3-green)
-![CMake](https://img.shields.io/badge/CMake-3.26+-red)
-![License](https://img.shields.io/badge/license-MIT-lightgrey)
+**✨ Highlights**
+- 🗺️ Heightmap terrain from multi-octave 2D Perlin noise (6 octaves)
+- 🔄 Dynamic chunk loading/unloading around the camera
+- ✂️ Face-culling mesh generation (only visible faces are rendered)
+- 🖼️ Texture atlas with per-face UVs (grass top/side, dirt, stone)
+- 🎮 First-person camera with mouse look
+- 🔍 Mouse wheel FOV zoom
+- 🖥️ Fullscreen / borderless / windowed display modes (currently defaulting to fullscreen)
 
----
-
-## ✨ Features
-
-- **Procedural terrain generation** using multi-octave Perlin noise (2D and 3D)
-- **Dynamic chunk system** — chunks load and unload around the player in real time
-- **Face culling** — only exposed block faces are rendered for performance
-- **Texture atlas** — grass, dirt, and stone blocks with per-face UV mapping
-- **First-person camera** with mouse look and keyboard movement
-- **Fly mode** — move freely through the world
-- **Fullscreen / borderless / windowed** display modes
+**🌍 Current World Rules**
+- 🧱 Block types: `AIR`, `GRASS`, `DIRT`, `STONE`
+- 📦 Chunk size: `16 x 16 x 16` (world data)
+- 🌐 Generation radius: `genRadius = 64` (world-space units)
+- 📷 Default camera: `FOV 70°`, `near 0.1`, `far 1000`
 
 ---
 
-## 📸 Block Types
+**🛠️ Build & Run**
 
-| Block  | Description                   |
-|--------|-------------------------------|
-| Grass  | Surface layer, unique top/side/bottom textures |
-| Dirt   | Layer beneath grass           |
-| Stone  | Deep underground layer        |
-| Air    | Empty space (not rendered)    |
+Prerequisites
+- ⚙️ CMake 3.26+
+- 💻 C++17 compiler (GCC/Clang/MSVC)
+- 🐍 Python 3 (for `run.py`)
 
----
-
-## 🏗️ Architecture
-
-```
-src/
-├── main.cpp              # Entry point
-├── app.cpp / .h          # Application lifecycle (init, run, shutdown)
-├── windowmanager         # GLFW window + display mode management
-├── inputmanager          # Unified keyboard & mouse input
-├── keyboard / mouse      # Per-frame key/button state tracking
-├── camera                # First-person camera (view/projection matrices)
-├── renderer              # OpenGL draw calls, shader binding
-├── mesh                  # Vertex/index buffer management, chunk mesh builder
-├── chunkmanager          # Chunk loading, unloading, dynamic updates
-├── terraingenerator      # Heightmap generation via Perlin noise
-├── perlinnoise           # 2D and 3D Perlin noise implementation
-├── texturemanager        # STB image loading, texture atlas binding
-├── tile / block          # Tile UV lookup, block type enum
-├── shader                # GLSL shader compilation and linking
-├── timemanager           # (Stub) Frame timing
-├── util                  # Tile UV calculation, input control logic
-└── debug                 # Colored terminal logging macros
-```
-
----
-
-## 🔧 Dependencies
-
-| Library | Purpose | Included via |
-|---------|---------|--------------|
-| [GLFW](https://www.glfw.org/) | Window and input | `thirdparty/glfw` |
-| [GLEW](https://glew.sourceforge.net/) | OpenGL extension loading | `thirdparty/glew` |
-| [GLM](https://github.com/g-truc/glm) | Math (vectors, matrices) | `thirdparty/glm` |
-| [stb_image](https://github.com/nothings/stb) | PNG/JPG texture loading | `thirdparty/stb` |
-
-All dependencies are bundled as Git submodules — no external installs required.
-
----
-
-## 🚀 Building
-
-### Prerequisites
-
-- CMake 3.26+
-- A C++17-capable compiler (GCC, Clang, MSVC)
-- Python 3 (for the helper build script)
-
-On Linux, you may also need:
-
+Linux may need extra packages
 ```bash
 sudo apt install libx11-dev libxi-dev libxrandr-dev libgl-dev
 ```
 
-### Clone with submodules
-
+Clone with submodules
 ```bash
-git clone --recurse-submodules https://github.com/yourname/minecraft.git
-cd minecraft
+git clone --recurse-submodules https://github.com/yourname/kaimicraft.git
+cd kaimicraft
 ```
 
-### Build and run (via Python helper)
-
+One-shot build and run (cleans and rebuilds `build/`)
 ```bash
 python run.py
 ```
 
-This will clean, configure, build, and launch the game automatically.
-
-### Manual CMake build
-
+Manual build
 ```bash
 cmake -S . -B build
 cmake --build build
-./build/bin/minecraft
+./build/bin/kaimicraft
 ```
 
 ---
 
-## 🎮 Controls
+**🕹️ Controls**
+- `W / A / S / D`: Move forward / left / back / right
+- `Space`: Fly up ⬆️
+- `Left Shift`: Fly down ⬇️
+- Mouse move: Look around 👀
+- Scroll wheel: Adjust FOV 🔭
+- `Escape`: Quit 🚪
 
-| Key / Input         | Action              |
-|---------------------|---------------------|
-| `W / A / S / D`     | Move forward / left / backward / right |
-| `Space`             | Fly up              |
-| `Left Shift`        | Fly down            |
-| `Mouse`             | Look around         |
-| `Scroll Wheel`      | Adjust field of view |
-| `Escape`            | Quit                |
-
----
-
-## 🌐 World Generation
-
-Terrain height is computed using **fractional Brownian motion (fBm)** — summing multiple octaves of Perlin noise:
-
-```
-octaves    = 6
-lacunarity = 2.0   (frequency multiplier per octave)
-gain       = 0.5   (amplitude multiplier per octave)
-baseHeight = 64
-heightScale = 32
-```
-
-The world is divided into **16×16×16 block chunks**. The engine generates all chunks within a configurable radius (`genRadius = 64`) around the player, and automatically unloads chunks that move out of range.
+The cursor is hidden and captured on startup.
 
 ---
 
-## 🗂️ Assets
-
+**📁 Project Structure**
 ```
-assets/
-├── shader/
-│   ├── vertshader.glsl   # Vertex shader — MVP transform + UV passthrough
-│   └── fragshader.glsl   # Fragment shader — texture sampling
-└── texture/
-    └── atlas.png         # 256×256 texture atlas (16px tiles, 1px padding)
-```
-
-The texture atlas is laid out in a row of tiles:
-
-| Index | Tile        |
-|-------|-------------|
-| 0     | Grass top   |
-| 1     | Grass side  |
-| 2     | Dirt        |
-| 3     | Stone       |
-
----
-
-## 📁 Project Structure
-
-```
-minecraft/
-├── assets/               # Shaders and textures
-├── src/                  # All C++ source files
-├── thirdparty/           # GLFW, GLEW, GLM, stb (submodules)
+kaimicraft/
+├── assets/               # 🎨 Shaders and textures
+├── src/                  # ⚙️ Engine source
+├── thirdparty/           # 📦 GLFW, GLEW, GLM, stb (submodules)
 ├── CMakeLists.txt
-├── run.py                # Build + run helper script
+├── run.py                # 🚀 Build + run helper
 └── README.md
 ```
 
----
-
-## 🐛 Debug Logging
-
-The project includes a set of colored terminal macros in `debug.h`:
-
-```cpp
-INFO("Texture loaded: %s", path.c_str());     // ✅ Green
-WARNING("Low memory");                         // ⚠️  Purple
-ERROR("Shader compile failed");                // ❌ Red
-FATAL("Cannot create window");                 // 💥 Dark red + exit
-```
-
----
-
-## 📚 Thirdparty libraries
-
-```
-thirdparty/
-├── glew/
-├── glfw/
-├── glm/
-└── stb/
-```
+**🧩 Core Modules**
+- `src/app.cpp`: App lifecycle and main loop
+- `src/windowmanager.*`: Window and display modes
+- `src/inputmanager.*`, `src/mouse.*`, `src/keyboard.*`: Input system
+- `src/camera.*`: First-person camera and projection
+- `src/chunkmanager.*`: Chunk generation, updates, culling
+- `src/mesh.*`: Chunk meshing and face culling
+- `src/terraingenerator.*`, `src/perlinnoise.*`: Noise-based terrain
+- `src/texturemanager.*`, `src/tile.*`: Texture atlas and UVs
+- `src/shader.*`: GLSL compile/link
+- `src/debug.*`: Colored logging macros
 
 ---
 
-## 📝 License
+**🖼️ Assets & Textures**
+- 🗺️ Atlas: `assets/texture/atlas.png`
+- 📐 Atlas size: `256 x 256`
+- 🔲 Tile size: `16 px`, padding `1 px`
+- 🧱 Tile indices: grass-top `0`, grass-side `1`, dirt `2`, stone `3`
 
-MIT License — see [LICENSE](LICENSE) for details.GPL-3.0 License — see [LICENSE](LICENSE) for details.
+---
+
+**⚙️ Config (in code)**
+- 🖥️ Display mode: `windowManager.init(title, FULLSCREEN)` in `src/app.cpp`
+- 🌐 Generation radius: `genRadius` in `src/chunkmanager.h`
+- 📷 Camera parameters: `src/camera.h`
+
+---
+
+**📝 Known Implementation Notes**
+- ⚠️ Terrain height uses 2D noise; `getDensity()` (3D noise) is not wired into generation yet.
+- 🚧 Current rendering is basic terrain + face culling; there is no block place/break logic yet.
+
+---
+
+**📄 License**
+MIT License
