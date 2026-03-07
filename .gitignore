@@ -7,3 +7,4 @@
 *.so
 *.exe
 *.out
+.DS_Store
