@@ -84,7 +84,6 @@ void App::shutdown() {
     camera.destroy();
     chunkManager.destroy();
     tg.destroy();
-    glfwTerminate();
 }
 
 void App::gameLoop() {

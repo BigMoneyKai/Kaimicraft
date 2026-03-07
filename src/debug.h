@@ -6,6 +6,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+namespace Util {
+    void quit(int code = 0);
+}
+
 #define COLOR_RESET     "\033[0m"
 #define COLOR_GREEN     "\033[32m"
 #define COLOR_PURPLE    "\033[35m"
@@ -62,8 +66,7 @@ typedef enum {
         fprintf(stderr, EMOJI_ALERT EMOJI_FATAL " in \"%s\" %s:%d" COLOR_DARK_RED " fatal" COLOR_RESET ": ", __func__, __FILE__, __LINE__);\
         fprintf(stderr, __VA_ARGS__);\
         fprintf(stderr, "\n");\
-        glfwTerminate();\
-        exit(EXIT_FAILURE);\
+        Util::quit(EXIT_FAILURE);\
     } while(0)
 
 // Debug shader
@@ -72,4 +75,3 @@ void printProgramLog(int program);
 
 // Debug OpenGL
 bool checkOpenGLError();
-

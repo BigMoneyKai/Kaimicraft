@@ -43,14 +43,6 @@ void Camera::move(const glm::vec3& delta) {
     m_pos += delta;
 }
 
-glm::mat4 Camera::getViewMatrix() const {
-    return glm::lookAt(m_pos, m_pos + m_front, m_up);
-}
-
-glm::mat4 Camera::getProjMatrix(float aspect) const {
-    return glm::perspective(m_fov, aspect, m_near, m_far);
-}
-
 void Camera::updateVectors() {
     glm::vec3 front;
     front.x = cos(m_yaw) * cos(m_pitch);

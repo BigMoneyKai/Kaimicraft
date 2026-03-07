@@ -31,6 +31,7 @@ class Camera {
 public:
     void init();
 
+    // getters
     const glm::vec3& pos()   const { return m_pos; }
     float yaw()   const { return m_yaw; }
     float pitch() const { return m_pitch; }
@@ -44,7 +45,11 @@ public:
     const glm::vec3& right() const { return m_right; }
     const glm::vec3& up()    const { return m_up; }
 
+    // setters
     void setPos(const glm::vec3& pos) { m_pos = pos; }
+    void setPosX(float x) { m_pos.x = x; }
+    void setPosY(float y) { m_pos.y = y; }
+    void setPosZ(float z) { m_pos.z = z; }
     void setYaw(float yaw)            { m_yaw = yaw; }
     void setPitch(float pitch)        { m_pitch = pitch; }
     void setRoll(float roll)          { m_roll = roll; }
@@ -52,19 +57,23 @@ public:
     void setFar(float far)            { m_far = far; }
     void setNear(float near)          { m_near = near; }
 
+    void addPosX(float x) { m_pos.x += x; }
+    void addPosY(float y) { m_pos.y += y; }
+    void addPosZ(float z) { m_pos.z += z; }
     void addYaw(float delta);
     void addPitch(float delta);
     void addRoll(float delta);
     void addFov(float delta);
     void move(const glm::vec3& delta);
 
-    glm::mat4 getViewMatrix() const;
-    glm::mat4 getProjMatrix(float aspect) const;
+    glm::mat4 getViewMatrix() const { return glm::lookAt(m_pos, m_pos + m_front, m_up); }
+    glm::mat4 getProjMatrix(float aspect) const { return glm::perspective(m_fov, aspect, m_near, m_far); }
 
     void updateVectors();
     
     void destroy();
-public:
+    
+private:
     glm::vec3 m_pos; 
     float m_yaw; // OpenGL facing -Z
     float m_pitch;

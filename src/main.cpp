@@ -2,10 +2,11 @@
 
 int main() {
     App app;
-    
+
+    Util::registerApp(&app);
     app.init();
     app.run();
-    app.shutdown();
+    Util::quit(0);
 
     return 0;
 }

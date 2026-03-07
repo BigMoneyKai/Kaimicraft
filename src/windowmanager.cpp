@@ -2,8 +2,10 @@
 
 void WindowManager::init(std::string title, DisplayMode display) {
     if(!glfwInit()) {
+        glfwTerminate();
         FATAL("GLFW initialization failed"); 
     }
+    INFO("GLFW version: ", glfwGetVersionString());
 
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -11,6 +13,7 @@ void WindowManager::init(std::string title, DisplayMode display) {
 
     monitor = glfwGetPrimaryMonitor();
     if(!monitor) {
+        glfwTerminate();
         FATAL("Primary monitor getting failed");
     }
 
@@ -46,8 +49,8 @@ void WindowManager::init(std::string title, DisplayMode display) {
 }
 
 void WindowManager::destroy() {
-    if(window) glfwTerminate();
-    glfwDestroyWindow(window);
+    if(window) glfwDestroyWindow(window);
+    glfwTerminate();
 }
 
 int WindowManager::getWidth() const {

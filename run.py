@@ -3,7 +3,7 @@ import subprocess
 
 # dir to store build contents
 build_dir = Path("build")
-exec_file = Path("build/bin/minecraft")
+exec_file = Path("build/bin/kaimicraft")
 
 # functions
 def clean():

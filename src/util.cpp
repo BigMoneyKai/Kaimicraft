@@ -1,6 +1,12 @@
 #include "util.h"
 #include "app.h"
 
+#include <cstdlib>
+
+namespace {
+    App* g_app = nullptr;
+}
+
 glm::vec4 Util::calcTileUV(int tileX, int tileY, int stride, int padding, int atlasWidth, int atlasHeight) {
     float u0 = tileX * (stride + padding) / (float)atlasWidth;
     float v0 = (stride + tileY * (stride + padding)) / (float)atlasHeight;
@@ -15,26 +21,26 @@ void Util::inputControl(App* appPtr) {
     }
 
     if(appPtr->inputManager.keyboard().isDown(GLFW_KEY_W)) {
-        appPtr->camera.m_pos.x -= walkSpeed * cos(glm::radians(180.0f) + appPtr->camera.m_yaw);
-        appPtr->camera.m_pos.z -= walkSpeed * sin(glm::radians(180.0f) + appPtr->camera.m_yaw);
+        appPtr->camera.addPosX(-walkSpeed * cos(glm::radians(180.0f) + appPtr->camera.yaw()));
+        appPtr->camera.addPosZ(-walkSpeed * sin(glm::radians(180.0f) + appPtr->camera.yaw()));
     }
     if(appPtr->inputManager.keyboard().isDown(GLFW_KEY_S)) {
-        appPtr->camera.m_pos.x -= walkSpeed * cos(appPtr->camera.m_yaw);
-        appPtr->camera.m_pos.z -= walkSpeed * sin(appPtr->camera.m_yaw);
+        appPtr->camera.addPosX(-walkSpeed * cos(appPtr->camera.yaw()));
+        appPtr->camera.addPosZ(-walkSpeed * sin(appPtr->camera.yaw()));
     }
     if(appPtr->inputManager.keyboard().isDown(GLFW_KEY_A)) {
-        appPtr->camera.m_pos.x -= walkSpeed * cos(glm::radians(90.0f) + appPtr->camera.m_yaw);
-        appPtr->camera.m_pos.z -= walkSpeed * sin(glm::radians(90.0f) + appPtr->camera.m_yaw);
+        appPtr->camera.addPosX(-walkSpeed * cos(glm::radians(90.0f) + appPtr->camera.yaw()));
+        appPtr->camera.addPosZ(-walkSpeed * sin(glm::radians(90.0f) + appPtr->camera.yaw()));
     }
     if(appPtr->inputManager.keyboard().isDown(GLFW_KEY_D)) {
-        appPtr->camera.m_pos.x -= walkSpeed * cos(-glm::radians(90.0f) + appPtr->camera.m_yaw);
-        appPtr->camera.m_pos.z -= walkSpeed * sin(-glm::radians(90.0f) + appPtr->camera.m_yaw);
+        appPtr->camera.addPosX(-walkSpeed * cos(-glm::radians(90.0f) + appPtr->camera.yaw()));
+        appPtr->camera.addPosZ(-walkSpeed * sin(-glm::radians(90.0f) + appPtr->camera.yaw()));
     }
     if(appPtr->inputManager.keyboard().isDown(GLFW_KEY_LEFT_SHIFT)) {
-        appPtr->camera.m_pos.y -= flyDownSpeed; 
+        appPtr->camera.addPosY(-flyDownSpeed); 
     }
     if(appPtr->inputManager.keyboard().isDown(GLFW_KEY_SPACE)) {
-        appPtr->camera.m_pos.y += flyUpSpeed; 
+        appPtr->camera.addPosY(flyUpSpeed); 
     }
    
     // ===== ⭐ 鼠标视角（核心！！！）=====
@@ -80,3 +86,15 @@ float Util::randomNum(float min, float max) {
     return dist(gen);
 }
 
+void Util::quit(int code) {
+    if (g_app) {
+        g_app->shutdown();
+    } else {
+        glfwTerminate();
+    }
+    std::exit(code);
+}
+
+void Util::registerApp(App* appPtr) {
+    g_app = appPtr;
+}
