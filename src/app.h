@@ -27,13 +27,15 @@ public:
     WindowManager windowManager;
     InputManager inputManager;
     TimeManager timeManager;
-    TextureManager textureManager;
+    TextureManager atlas;
+    TextureManager sun;
     Renderer renderer;
     Camera camera;
     ChunkManager chunkManager;
     TerrainGenerator tg;
 
     bool isRunning;
+    bool headless = false;
 
 private:
     void gameLoop();

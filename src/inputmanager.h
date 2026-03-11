@@ -12,6 +12,7 @@
 class InputManager {
 public:
     void init(GLFWwindow* window);
+    void poll();
     void nextFrame();
 
     const Mouse& mouse() const { return m_mouse; }
@@ -24,8 +25,7 @@ public:
 
     void destroy();
 private:
-    GLFWwindow* m_window;
+    GLFWwindow* m_window = nullptr;
     Mouse m_mouse;
     Keyboard m_keyboard;
 };
-

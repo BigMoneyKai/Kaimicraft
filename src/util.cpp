@@ -2,9 +2,15 @@
 #include "app.h"
 
 #include <cstdlib>
+#include <algorithm>
+#include <GLFW/glfw3.h>
 
 namespace {
     App* g_app = nullptr;
+
+    constexpr float kPlayerHeight = 1.8f;
+    constexpr float kPlayerRadius = 0.3f;
+    constexpr float kPlayerEyeHeight = 1.6f;
 }
 
 glm::vec4 Util::calcTileUV(int tileX, int tileY, int stride, int padding, int atlasWidth, int atlasHeight) {
@@ -20,28 +26,35 @@ void Util::inputControl(App* appPtr) {
         appPtr->isRunning = false;
     }
 
-    if(appPtr->inputManager.keyboard().isDown(GLFW_KEY_W)) {
-        appPtr->camera.addPosX(-walkSpeed * cos(glm::radians(180.0f) + appPtr->camera.yaw()));
-        appPtr->camera.addPosZ(-walkSpeed * sin(glm::radians(180.0f) + appPtr->camera.yaw()));
+    const Keyboard kb = appPtr->inputManager.keyboard();
+
+    glm::vec3 move(0.0f);
+    glm::vec3 forward = appPtr->camera.front();
+    glm::vec3 right = appPtr->camera.right();
+
+    if (glm::length(forward) > 0.0f) forward = glm::normalize(forward);
+    if (glm::length(right) > 0.0f) right = glm::normalize(right);
+
+    glm::vec3 dir(0.0f);
+    if (kb.isDown(GLFW_KEY_W)) dir += forward;
+    if (kb.isDown(GLFW_KEY_S)) dir -= forward;
+    if (kb.isDown(GLFW_KEY_D)) dir += right;
+    if (kb.isDown(GLFW_KEY_A)) dir -= right;
+    if (glm::length(dir) > 0.0f) {
+        dir = glm::normalize(dir);
     }
-    if(appPtr->inputManager.keyboard().isDown(GLFW_KEY_S)) {
-        appPtr->camera.addPosX(-walkSpeed * cos(appPtr->camera.yaw()));
-        appPtr->camera.addPosZ(-walkSpeed * sin(appPtr->camera.yaw()));
+
+    float speed = walkSpeed;
+    move += dir * speed;
+
+    if (kb.isDown(GLFW_KEY_SPACE)) {
+        move.y += flyUpSpeed;
     }
-    if(appPtr->inputManager.keyboard().isDown(GLFW_KEY_A)) {
-        appPtr->camera.addPosX(-walkSpeed * cos(glm::radians(90.0f) + appPtr->camera.yaw()));
-        appPtr->camera.addPosZ(-walkSpeed * sin(glm::radians(90.0f) + appPtr->camera.yaw()));
+    if (kb.isDown(GLFW_KEY_LEFT_SHIFT)) {
+        move.y -= flyDownSpeed;
     }
-    if(appPtr->inputManager.keyboard().isDown(GLFW_KEY_D)) {
-        appPtr->camera.addPosX(-walkSpeed * cos(-glm::radians(90.0f) + appPtr->camera.yaw()));
-        appPtr->camera.addPosZ(-walkSpeed * sin(-glm::radians(90.0f) + appPtr->camera.yaw()));
-    }
-    if(appPtr->inputManager.keyboard().isDown(GLFW_KEY_LEFT_SHIFT)) {
-        appPtr->camera.addPosY(-flyDownSpeed); 
-    }
-    if(appPtr->inputManager.keyboard().isDown(GLFW_KEY_SPACE)) {
-        appPtr->camera.addPosY(flyUpSpeed); 
-    }
+
+    appPtr->camera.move(move);
    
     // ===== ⭐ mouse vision =====
     double dx = appPtr->inputManager.mouse().deltaX();
@@ -84,6 +97,18 @@ float Util::randomNum(float min, float max) {
     
     std::uniform_real_distribution<float> dist(min, max); 
     return dist(gen);
+}
+
+float Util::playerHeight() {
+    return kPlayerHeight;
+}
+
+float Util::playerEyeHeight() {
+    return kPlayerEyeHeight;
+}
+
+float Util::playerRadius() {
+    return kPlayerRadius;
 }
 
 void Util::quit(int code) {

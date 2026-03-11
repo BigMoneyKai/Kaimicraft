@@ -12,6 +12,8 @@ void Renderer::init() {
             "assets/shader/vertshader.glsl",
             "assets/shader/fragshader.glsl");
     shaders.back().process();
+
+    lightManager.init();
 }
 
 void Renderer::display(Camera* camPtr, WindowManager* wmPtr) {
@@ -31,7 +33,7 @@ void Renderer::display(Camera* camPtr, WindowManager* wmPtr, const std::vector<M
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glFrontFace(GL_CCW); // 默认但建议写
-    const auto& shader = shaders[0];
+    Shader shader = shaders[0];
     if(shader.shaderProgram == 0) {
         return;
     }
@@ -42,22 +44,20 @@ void Renderer::display(Camera* camPtr, WindowManager* wmPtr, const std::vector<M
     float aspect = (float)wmPtr->getWidth()/(float)wmPtr->getHeight();
     glm::mat4 pMat = camPtr->getProjMatrix(aspect);
     glm::mat4 vMat = camPtr->getViewMatrix();
-    
     glm::mat4 mMat = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, -10.0f, -5.0f));
     
-    glm::mat4 mvMat = vMat * mMat;
+    shader.setMat("m", mMat);
+    shader.setMat("v", vMat);
+    shader.setMat("p", pMat);
 
-    int mvLoc = glGetUniformLocation(shader.shaderProgram, "mv");
-    if(mvLoc != -1) {
-        glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat));
-    }
-    int projLoc = glGetUniformLocation(shader.shaderProgram, "p");
-    if(projLoc != -1) {
-        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat));
-    }
+    // Lighting uniforms
+    shader.setVec("viewPos", camPtr->pos());
+    shader.setFloat("shininess", 32.0f);
+    lightManager.upload(shader);
 
     int texLoc = glGetUniformLocation(shaders.back().shaderProgram, "uTexture1");
     glUniform1i(texLoc, 0);
+   
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glDepthFunc(GL_LEQUAL);
 
@@ -66,6 +66,10 @@ void Renderer::display(Camera* camPtr, WindowManager* wmPtr, const std::vector<M
             mesh->draw();
         }
     }
+}
+
+void Renderer::setSunlight(const DirLight& light) {
+    lightManager.sunlight = light;
 }
 
 void Renderer::destroy() {

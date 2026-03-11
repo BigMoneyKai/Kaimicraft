@@ -15,6 +15,9 @@ namespace Util {
     glm::vec4 calcTileUV(int, int, int, int, int, int);
     void inputControl(App* appPtr);
     float randomNum(float min, float max);
+    float playerHeight();
+    float playerEyeHeight();
+    float playerRadius();
     void registerApp(App* appPtr);
     void quit(int code);
 }

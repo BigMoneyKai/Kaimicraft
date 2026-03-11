@@ -33,6 +33,20 @@ void InputManager::init(GLFWwindow* window) {
 
 }
 
+void InputManager::poll() {
+    if (!m_window) return;
+
+    for (int key = 0; key < Keyboard::MAX_KEYS; ++key) {
+        int state = glfwGetKey(m_window, key);
+        m_keyboard.setKey(key, state == GLFW_PRESS || state == GLFW_REPEAT);
+    }
+
+    for (int btn = 0; btn < Mouse::MAX_BTNS; ++btn) {
+        int state = glfwGetMouseButton(m_window, btn);
+        m_mouse.setBtn(btn, state == GLFW_PRESS);
+    }
+}
+
 void InputManager::nextFrame() {
     m_mouse.nextFrame();
     m_keyboard.nextFrame();

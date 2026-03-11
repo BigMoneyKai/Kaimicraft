@@ -33,6 +33,16 @@ unsigned int Shader::compile(const std::string& src, GLenum type) {
     return shader;
 }
 
+int Shader::getLocation(const std::string& name) {
+    if(uniformCache.count(name)) {
+        return uniformCache[name];
+    }
+
+    int loc = glGetUniformLocation(shaderProgram, name.c_str());
+    uniformCache[name] = loc;
+    return loc;
+}
+
 void Shader::process() {
     vertShaderSrc = parse(vertPath);
     fragShaderSrc = parse(fragPath);
@@ -64,4 +74,64 @@ void Shader::destroy() {
         glDeleteShader(fragShader);
         fragShader = 0;
     }
+}
+
+// mat4
+void Shader::setMat(const std::string& name, const glm::mat4& mat) {
+    glUniformMatrix4fv(
+        getLocation(name),
+        1,
+        GL_FALSE,
+        glm::value_ptr(mat)
+    );
+}
+
+// mat3
+void Shader::setMat(const std::string& name, const glm::mat3& mat) {
+    glUniformMatrix3fv(
+        getLocation(name),
+        1,
+        GL_FALSE,
+        glm::value_ptr(mat)
+    );
+   
+}
+
+void Shader::setVec(const std::string& name, const glm::vec4& vec) {
+    glUniform4fv(
+        getLocation(name),
+        1,
+        glm::value_ptr(vec)
+    );
+
+}
+
+void Shader::setVec(const std::string& name, const glm::vec3& vec) {
+    glUniform3fv(
+        getLocation(name),
+        1,
+        glm::value_ptr(vec)
+    );
+}
+
+void Shader::setVec(const std::string& name, const glm::vec2& vec) {
+    glUniform2fv(
+        getLocation(name),
+        1,
+        glm::value_ptr(vec)
+    );
+}
+
+void Shader::setFloat(const std::string& name, const float& val) {
+    glUniform1f(
+        getLocation(name),
+        val
+    );
+}
+
+void Shader::setInt(const std::string& name, const int& val) {
+    glUniform1i(
+        getLocation(name),
+        val
+    );
 }

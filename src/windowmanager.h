@@ -24,11 +24,13 @@ public:
     void destroy();   
     int getWidth() const;
     int getHeight() const;
+    bool isHeadless() const;
 
 public:
     GLFWwindow* window;
     int width = 0;
     int height = 0;
+    bool headless = false;
 
 private:
     const GLFWvidmode* mode;

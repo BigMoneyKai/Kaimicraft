@@ -196,10 +196,11 @@ static void pushFace(
         {uv.z, uv.w},  // TR
         {uv.x, uv.w},  // TL
     };
+    const glm::vec3 normal = glm::vec3(faceNormals[face]);
     for(int v = 0; v < 4; v++) {
         vertices.push_back({
             blockPos + faceVerts[face][v],
-            {0.0f, 0.0f, 0.0f},
+            normal,
             uvs[v]
         });
     }

@@ -8,8 +8,14 @@ void App::init() {
 
     INFO("-----Window manager initailizating-----");
     windowManager.init(title, FULLSCREEN);
+    headless = windowManager.isHeadless();
     INFO("Window manager ready");
     std::cout << '\n';
+
+    if (headless) {
+        INFO("Headless mode active: skipping graphics initialization and game loop");
+        return;
+    }
     
     INFO("-----GLEW initailizating-----");
     if(glewInit() != GLEW_OK) {
@@ -29,7 +35,8 @@ void App::init() {
     std::cout << '\n';
      
     INFO("-----Texture manager initailizating-----");
-    textureManager.init("assets/texture/atlas.png");
+    atlas.init("assets/texture/atlas.png");
+    sun.init("assets/texture/sun.png");
     INFO("Texture manager ready");
     std::cout << '\n';
     
@@ -56,16 +63,26 @@ void App::init() {
     float spawnX = Util::randomNum(-1000.0f, 1000.0f);
     float spawnZ = Util::randomNum(-1000.0f, 1000.0f);
     int height = tg.getHeight((int)spawnX, (int)spawnZ);
-    camera.setPos(glm::vec3(spawnX, (float)(height + 2), spawnZ));
+    float spawnY = (float)height + 1.0f + Util::playerEyeHeight() + 0.05f;
+    camera.setPos(glm::vec3(spawnX, spawnY, spawnZ));
 
     glfwSetInputMode(windowManager.window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     INFO("Set input mode: %s", "cursor hidden");    
     std::cout << '\n';
+
+    if (glfwRawMouseMotionSupported()) {
+        glfwSetInputMode(windowManager.window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+        INFO("Raw mouse motion enabled");
+    }
     
     glfwSwapInterval(1);
 }
 
 void App::run() {
+    if (headless) {
+        INFO("Headless mode active: run skipped");
+        return;
+    }
     glfwSwapInterval(1);
 
     INFO("Game loop running...");
@@ -75,9 +92,12 @@ void App::run() {
 
 void App::shutdown() {
     windowManager.destroy();
+    if (headless) {
+        return;
+    }
     inputManager.destroy();
     timeManager.destroy();
-    textureManager.destroy();
+    atlas.destroy();
     renderer.destroy();
     camera.destroy();
     chunkManager.destroy();
@@ -87,16 +107,20 @@ void App::shutdown() {
 void App::gameLoop() {
     isRunning = true;
     while(!glfwWindowShouldClose(windowManager.window) && isRunning) {
-        
+        timeManager.update();
+        renderer.setSunlight(timeManager.sunlight());
+
         glClear(GL_DEPTH_BUFFER_BIT);
-        glClearColor(0.529f, 0.808f, 0.922f, 1.0f); 
+        const glm::vec3& sky = timeManager.skyColor();
+        glClearColor(sky.r, sky.g, sky.b, 1.0f); 
         glClear(GL_COLOR_BUFFER_BIT);
         
-        textureManager.bind();
+        atlas.bind();
         chunkManager.updateDynamic(camera.pos(), &tg);
         renderer.display(&camera, &windowManager, chunkManager.meshes());
         
         glfwPollEvents();
+        inputManager.poll();
         Util::inputControl(this);
         inputManager.nextFrame();
 

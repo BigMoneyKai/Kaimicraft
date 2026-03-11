@@ -40,6 +40,7 @@ set(SRC_FILES
     src/inputmanager.cpp
     src/timemanager.cpp
     src/renderer.cpp
+    src/lightmanager.cpp
     src/mesh.cpp
     src/shader.cpp
     src/debug.cpp

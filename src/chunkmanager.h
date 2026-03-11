@@ -29,6 +29,8 @@ public:
    void updateDynamic(const glm::vec3& camPos, TerrainGenerator* tgPtr);
    const std::vector<Mesh*>& meshes() const { return m_visibleMeshes; }
 
+   bool isSolidBlock(int wx, int wy, int wz) const;
+
    void destroy();
 
 private:

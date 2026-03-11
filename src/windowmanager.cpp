@@ -1,9 +1,39 @@
 #include "windowmanager.h"
 
+#include <cstdlib>
+#include <cstring>
+
+static bool isHeadlessEnv() {
+    const char* headless = std::getenv("KAIMICRAFT_HEADLESS");
+    if (headless && headless[0] != '\0' && std::strcmp(headless, "0") != 0) {
+        return true;
+    }
+    const char* display = std::getenv("DISPLAY");
+    const char* wayland = std::getenv("WAYLAND_DISPLAY");
+    return (!display || display[0] == '\0') && (!wayland || wayland[0] == '\0');
+}
+
 void WindowManager::init(std::string title, DisplayMode display) {
+    headless = isHeadlessEnv();
+    if (headless) {
+        glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_NULL);
+    }
     if(!glfwInit()) {
-        glfwTerminate();
-        FATAL("GLFW initialization failed"); 
+        const char* desc = nullptr;
+        int code = glfwGetError(&desc);
+        if (!headless) {
+            glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_NULL);
+            if (glfwInit()) {
+                headless = true;
+                INFO("GLFW fallback to headless platform (code=%d): %s", code, desc ? desc : "no description");
+            } else {
+                const char* desc2 = nullptr;
+                int code2 = glfwGetError(&desc2);
+                FATAL("GLFW initialization failed (code=%d): %s", code2, desc2 ? desc2 : "no description");
+            }
+        } else {
+            FATAL("GLFW initialization failed (code=%d): %s", code, desc ? desc : "no description");
+        }
     }
     INFO("GLFW version: %s", glfwGetVersionString());
 
@@ -11,14 +41,17 @@ void WindowManager::init(std::string title, DisplayMode display) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 
-    monitor = glfwGetPrimaryMonitor();
-    if(!monitor) {
-        glfwTerminate();
-        FATAL("Primary monitor getting failed");
+    monitor = nullptr;
+    if (!headless) {
+        monitor = glfwGetPrimaryMonitor();
+        if(!monitor) {
+            FATAL("Primary monitor getting failed");
+        }
     }
 
 
-    switch(display) {
+    const DisplayMode resolvedDisplay = headless ? WINDOWED : display;
+    switch(resolvedDisplay) {
         case FULLSCREEN:
             mode = glfwGetVideoMode(monitor);
             width = mode->width;
@@ -59,4 +92,8 @@ int WindowManager::getWidth() const {
 
 int WindowManager::getHeight() const {
     return height;
+}
+
+bool WindowManager::isHeadless() const {
+    return headless;
 }

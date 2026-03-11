@@ -115,3 +115,34 @@ void ChunkManager::updateDynamic(const glm::vec3& camPos, TerrainGenerator* tgPt
 void ChunkManager::destroy() {
 
 }
+
+static int floorDiv(int v, int size) {
+    int q = v / size;
+    int r = v % size;
+    if (r != 0 && v < 0) {
+        --q;
+    }
+    return q;
+}
+
+bool ChunkManager::isSolidBlock(int wx, int wy, int wz) const {
+    const int cx = floorDiv(wx, chunkX);
+    const int cy = floorDiv(wy, chunkY);
+    const int cz = floorDiv(wz, chunkZ);
+
+    const ChunkCoord coord{cx, cy, cz};
+    auto it = m_chunks.find(coord);
+    if (it == m_chunks.end()) {
+        return false;
+    }
+
+    const int lx = wx - cx * chunkX;
+    const int ly = wy - cy * chunkY;
+    const int lz = wz - cz * chunkZ;
+
+    if (lx < 0 || lx >= chunkX) return false;
+    if (ly < 0 || ly >= chunkY) return false;
+    if (lz < 0 || lz >= chunkZ) return false;
+
+    return it->second.blocks[lx][ly][lz] != AIR;
+}
