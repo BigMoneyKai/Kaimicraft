@@ -16,8 +16,8 @@ namespace Util {
 #define COLOR_RED       "\033[91m"
 #define COLOR_DARK_RED  "\033[31m"
 
-#define EMOJI_INFO      "ℹ️ "
-#define EMOJI_WARNING   "⚠️ "
+#define EMOJI_SMILE      "😄"
+#define EMOJI_WARNING   "⚠️"
 #define EMOJI_ERROR     "❌"
 #define EMOJI_FATAL     "💥"
 #define EMOJI_OK        "✅"
@@ -38,11 +38,11 @@ typedef enum {
     DBG_ERROR,
     DBG_FATAL,
 
-} DebugLevel; 
+} DebugLevel;
 
 #define INFO(...) \
     do{\
-        fprintf(stdout, EMOJI_OK EMOJI_INFO " " COLOR_GREEN "info" COLOR_RESET": ");\
+        fprintf(stdout, EMOJI_OK EMOJI_SMILE " " COLOR_GREEN "info" COLOR_RESET": ");\
         fprintf(stdout, __VA_ARGS__);\
         fprintf(stdout, "\n");\
     } while(0)
