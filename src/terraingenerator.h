@@ -10,11 +10,16 @@ public:
 
     void destroy();
 private:
-
+    float fbm2d(float x, float z);
 private:
     PerlinNoise m_perlinNoise;
-    
+
     int m_octaves;
     float m_lacunarity;
     float m_gain;
+
+    float m_continentFreq;
+    float m_ridgeFreq;
+    float m_erosionFreq;
+    float m_detailFreq;
 };
