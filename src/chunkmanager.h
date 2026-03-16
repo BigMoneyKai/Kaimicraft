@@ -1,75 +1,68 @@
-#pragma once 
+#pragma once
+
+#include <glm/glm.hpp>
 
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
-#include <glm/glm.hpp>
+#include <queue>
+#include <cmath>
+#include <memory>
 
 #include "block.h"
 #include "terraingenerator.h"
 #include "mesh.h"
 #include "util.h"
+#include "threadpool.h"
 
-constexpr int chunkX = 16;
-constexpr int chunkY = 16;
-constexpr int chunkZ = 16;
+constexpr int baseHeight = -64;
 
-constexpr int genRadius = 64;
+struct ChunkCoord {
+    int x;
+    int y;
+    int z;
 
-constexpr int verticalChunks = chunkY / chunkY; 
-constexpr int minChunkY = 0;
-constexpr int maxChunkY = 24;
+    bool operator==(const ChunkCoord& other) const {
+        return x == other.x && y == other.y && z == other.z;
+    }
+};
+
+struct ChunkCoordHash {
+    std::size_t operator()(const ChunkCoord& c) const {
+        std::size_t h1 = std::hash<int>{}(c.x);
+        std::size_t h2 = std::hash<int>{}(c.y);
+        std::size_t h3 = std::hash<int>{}(c.z);
+        return h1 ^ (h2 << 1) ^ (h3 << 2) ^ (h1 << 7);
+    }
+};
+
+struct Chunk {
+    ChunkCoord coord;
+    BlockType blocks[chunkLength][chunkHeight][chunkWidth];
+    std::vector<Vertex> vertices;
+
+    Mesh mesh;
+    bool blockReady = false;
+    bool meshReady = false;
+    bool uploaded = false;
+};
 
 class ChunkManager {
 public:
-   void init(int cx, int cz);
+    void init();
 
-   void buildMesh();
+    void updateDynamic(const glm::vec3& camPos, TerrainGenerator* tgPtr, ThreadPool& threadPool);
+    std::vector<const Mesh*> meshes();
 
-   void updateDynamic(const glm::vec3& camPos, TerrainGenerator* tgPtr);
-   const std::vector<Mesh*>& meshes() const { return m_visibleMeshes; }
-
-   bool isSolidBlock(int wx, int wy, int wz) const;
-
-   void destroy();
+    void destroy();
 
 private:
-    int m_chunkX;
-    int m_chunkY;
-    int m_chunkZ;
-
+    void generateChunkBlocks(Chunk& chunk, TerrainGenerator* tgPtr);
+    std::unordered_set<ChunkCoord, ChunkCoordHash> computeWantedChunks(const glm::vec3& camPos);
 private:
-    struct ChunkCoord {
-        int x;
-        int y;
-        int z;
+    std::unordered_map<ChunkCoord, std::unique_ptr<Chunk>, ChunkCoordHash> m_chunks;
 
-        bool operator==(const ChunkCoord& other) const {
-            return x == other.x && y == other.y && z == other.z;
-        }
-    };
-
-    struct ChunkCoordHash {
-        std::size_t operator()(const ChunkCoord& c) const {
-            std::size_t h1 = std::hash<int>{}(c.x);
-            std::size_t h2 = std::hash<int>{}(c.y);
-            std::size_t h3 = std::hash<int>{}(c.z);
-            return h1 ^ (h2 << 1) ^ (h3 << 2);
-        }
-    };
-
-    struct Chunk {
-        ChunkCoord coord;
-        BlockType blocks[chunkX][chunkY][chunkZ];
-        Mesh mesh;
-        bool meshReady;
-    };
-
-    void generateChunkBlocks(Chunk& chunk, TerrainGenerator* tg);
-    void buildChunkMesh(Chunk& chunk);
-
-    std::unordered_map<ChunkCoord, Chunk, ChunkCoordHash> m_chunks;
-    std::vector<Mesh*> m_visibleMeshes;
-    bool m_hasCenter = false;
-    ChunkCoord m_center{0, 0, 0};
+    int m_grassLayerDepth;
+    int m_dirtLayerDepth;
+    int m_bedrockLayerDepth;
 };
