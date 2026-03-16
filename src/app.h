@@ -17,13 +17,16 @@
 #include "util.h"
 #include "chunkmanager.h"
 #include "terraingenerator.h"
+#include "threadpool.h"
 
 class App {
 public:
-    void init(); 
-    void run(); 
+    void init();
+    void run();
     void shutdown();
 
+public:
+    ThreadPool threadPool;
     WindowManager windowManager;
     InputManager inputManager;
     TimeManager timeManager;
@@ -41,6 +44,6 @@ private:
     void gameLoop();
 
 private:
-    std::string title; 
-    
+    std::string title;
+
 };

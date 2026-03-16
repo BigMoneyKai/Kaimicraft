@@ -1,4 +1,4 @@
-#pragma once 
+#pragma once
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -12,10 +12,11 @@
 #include "util.h"
 #include "tile.h"
 
-// one chunk mesh = 15x15x15
-constexpr int chunkLength = 15;
-constexpr int chunkWidth = 15;
-constexpr int chunkHeight = 15;
+constexpr int chunkLength = 16; // X
+constexpr int chunkHeight = 24 * 16; // Y (384 blocks)
+constexpr int chunkWidth = 16;  // Z
+
+constexpr int genRadius = 128;
 
 //                +-----------------------+
 //               /|                      /|
@@ -79,7 +80,7 @@ constexpr Vertex metaVertices[] = {
     {{ 0.5f, 0.5f,-0.5f},{0,0,0},{1,1}},
     {{ 0.5f, 0.5f, 0.5f},{0,0,0},{0,1}},
 
-    // 顶面 (y = +0.5) 
+    // 顶面 (y = +0.5)
     {{-0.5f, 0.5f, 0.5f},{0,0,0},{0,0}},
     {{ 0.5f, 0.5f, 0.5f},{0,0,0},{1,0}},
     {{ 0.5f, 0.5f,-0.5f},{0,0,0},{1,1}},

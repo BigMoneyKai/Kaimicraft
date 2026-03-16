@@ -2,17 +2,16 @@
 
 #include <glm/glm.hpp>
 
-#include <vector>
 #include <cmath>
 
 // gradients in 2D
-constexpr glm::vec2 grads2D[8] = {
+constexpr glm::vec2 grads2d[8] = {
     // axis
     {1.0f, 0.0f},
     {-1.0f, 0.0f},
     {1.0f, 1.0f},
     {1.0f, -1.0f},
-    
+
     // diagonal
     {0.7071068f, 0.7071068f},
     {-0.7071068f, 0.7071068f},
@@ -21,15 +20,15 @@ constexpr glm::vec2 grads2D[8] = {
 };
 
 // gradients in 3D
-constexpr glm::vec3 grads3D[12] = {
+constexpr glm::vec3 grads3d[12] = {
     // xoy
-    { 1, 1, 0}, {-1, 1, 0}, { 1,-1, 0}, {-1,-1, 0},
-    
+    {1, 1, 0}, {-1, 1, 0}, { 1,-1, 0}, {-1,-1, 0},
+
     // xoz
-    { 1, 0, 1}, {-1, 0, 1}, { 1, 0,-1}, {-1, 0,-1},
-    
+    {1, 0, 1}, {-1, 0, 1}, { 1, 0,-1}, {-1, 0,-1},
+
     // yoz
-    { 0, 1, 1}, { 0,-1, 1}, { 0, 1,-1}, { 0,-1,-1},
+    {0, 1, 1}, { 0,-1, 1}, { 0, 1,-1}, { 0,-1,-1},
 };
 
 // permutations
@@ -46,7 +45,7 @@ constexpr int perm[256] = {
     207,206, 59,227, 47, 16, 58, 17,182,189, 28, 42,223,183,170,213,
     119,248,152,  2, 44,154,163, 70,221,153,101,155,167, 43,172,  9,
     129, 22, 39,253, 19, 98,108,110, 79,113,224,232,178,185,112,104,
-    218,246, 97,228,251, 34,242,193,238,210,144, 12,191,179,162,241, 
+    218,246, 97,228,251, 34,242,193,238,210,144, 12,191,179,162,241,
      81, 51,145,235,249, 14,239,107, 49,192,214, 31,181,199,106,157,
     184, 84,204,176,115,121, 50, 45,127,  4,150,254,138,236,205, 93,
     222,114, 67, 29, 24, 72,243,141,128,195, 78, 66,215, 61,156,180,
@@ -54,13 +53,12 @@ constexpr int perm[256] = {
 
 class PerlinNoise {
 public:
-    float noise2D(float x, float z);
-    float noise3D(float x, float y, float z);
+    float noise2d(float x, float z);
+    float noise3d(float x, float y, float z);
 
 private:
     double fade(double t);
     double lerp(double t, double a, double b);
-    glm::vec2 grad2D(int x, int z);
-    glm::vec3 grad3D(int x, int y, int z);
+    glm::vec2 grad2d(int x, int z);
+    glm::vec3 grad3d(int x, int y, int z);
 };
-

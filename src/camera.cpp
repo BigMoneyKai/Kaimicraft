@@ -37,7 +37,7 @@ void Camera::addRoll(float delta) {
 void Camera::addFov(float delta) {
     m_fov += delta;
     updateVectors();
-}   
+}
 
 void Camera::move(const glm::vec3& delta) {
     m_pos += delta;

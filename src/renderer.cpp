@@ -16,16 +16,7 @@ void Renderer::init() {
     lightManager.init();
 }
 
-void Renderer::display(Camera* camPtr, WindowManager* wmPtr) {
-    std::vector<Mesh*> meshPtrs;
-    meshPtrs.reserve(meshes.size());
-    for(auto& mesh : meshes) {
-        meshPtrs.push_back(&mesh);
-    }
-    display(camPtr, wmPtr, meshPtrs);
-}
-
-void Renderer::display(Camera* camPtr, WindowManager* wmPtr, const std::vector<Mesh*>& meshesToDraw) {
+void Renderer::display(Camera* camPtr, WindowManager* wmPtr, std::vector<const Mesh*> meshesToDraw) {
     if(shaders.empty() || meshesToDraw.empty()) {
         return;
     }

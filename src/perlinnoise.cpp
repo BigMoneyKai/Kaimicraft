@@ -1,6 +1,6 @@
 #include "perlinnoise.h"
 
-float PerlinNoise::noise2D(float x, float z) {
+float PerlinNoise::noise2d(float x, float z) {
     float x0 = std::floor(x);
     float z0 = std::floor(z);
 
@@ -10,10 +10,10 @@ float PerlinNoise::noise2D(float x, float z) {
     float sx = x - x0;
     float sz = z - z0;
 
-    glm::vec2 g00 = grad2D(x0, z0);
-    glm::vec2 g10 = grad2D(x1, z0);
-    glm::vec2 g01 = grad2D(x0, z1);
-    glm::vec2 g11 = grad2D(x1, z1);
+    glm::vec2 g00 = grad2d(x0, z0);
+    glm::vec2 g10 = grad2d(x1, z0);
+    glm::vec2 g01 = grad2d(x0, z1);
+    glm::vec2 g11 = grad2d(x1, z1);
 
     float n00 = glm::dot(g00, glm::vec2(sx, sz));
     float n10 = glm::dot(g10, glm::vec2(sx-1.0f, sz));
@@ -31,7 +31,7 @@ float PerlinNoise::noise2D(float x, float z) {
     return nxz;
 }
 
-float PerlinNoise::noise3D(float x, float y, float z) {
+float PerlinNoise::noise3d(float x, float y, float z) {
     float x0 = std::floor(x);
     float y0 = std::floor(y);
     float z0 = std::floor(z);
@@ -44,14 +44,14 @@ float PerlinNoise::noise3D(float x, float y, float z) {
     float sy = y - y0;
     float sz = z - z0;
 
-    glm::vec3 g000 = grad3D(x0, y0, z0);
-    glm::vec3 g100 = grad3D(x1, y0, z0);
-    glm::vec3 g010 = grad3D(x0, y1, z0);
-    glm::vec3 g110 = grad3D(x1, y1, z0);
-    glm::vec3 g001 = grad3D(x0, y0, z1);
-    glm::vec3 g101 = grad3D(x1, y0, z1);
-    glm::vec3 g011 = grad3D(x0, y1, z1);
-    glm::vec3 g111 = grad3D(x1, y1, z1);
+    glm::vec3 g000 = grad3d(x0, y0, z0);
+    glm::vec3 g100 = grad3d(x1, y0, z0);
+    glm::vec3 g010 = grad3d(x0, y1, z0);
+    glm::vec3 g110 = grad3d(x1, y1, z0);
+    glm::vec3 g001 = grad3d(x0, y0, z1);
+    glm::vec3 g101 = grad3d(x1, y0, z1);
+    glm::vec3 g011 = grad3d(x0, y1, z1);
+    glm::vec3 g111 = grad3d(x1, y1, z1);
 
     float n000 = glm::dot(g000, glm::vec3(sx, sy, sz));
     float n100 = glm::dot(g100, glm::vec3(sx-1.0f, sy, sz));
@@ -73,9 +73,9 @@ float PerlinNoise::noise3D(float x, float y, float z) {
 
     float nxy0 = lerp(nx00, nx10, v);
     float nxy1 = lerp(nx01, nx11, v);
-    
+
     float nxyz = lerp(nxy0, nxy1, w);
-    
+
     return nxyz;
 }
 
@@ -87,12 +87,12 @@ double PerlinNoise::lerp(double t, double a, double b) {
     return a + t * (b - a);
 }
 
-glm::vec2 PerlinNoise::grad2D(int x, int z) {
+glm::vec2 PerlinNoise::grad2d(int x, int z) {
      int hash = perm[(perm[x & 255] + z) & 255];
-     return grads2D[hash % 8];
+     return grads2d[hash % 8];
 }
 
-glm::vec3 PerlinNoise::grad3D(int x, int y, int z) {
+glm::vec3 PerlinNoise::grad3d(int x, int y, int z) {
      int hash = perm[(perm[(perm[x & 255] + y) & 255] + z) & 255];
-     return grads3D[hash % 12];
+     return grads3d[hash % 12];
 }

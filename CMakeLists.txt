@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-if(NOT CMAKE_BUILD_TYPE) 
+if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Debug)
 endif()
 
@@ -54,6 +54,7 @@ set(SRC_FILES
     src/chunkmanager.cpp
     src/terraingenerator.cpp
     src/perlinnoise.cpp
+    src/threadpool.cpp
 )
 
 add_executable(${GAME} ${SRC_FILES})

@@ -15,8 +15,7 @@
 class Renderer {
 public:
     void init();
-    void display(Camera* camPtr, WindowManager* wmPtr);
-    void display(Camera* camPtr, WindowManager* wmPtr, const std::vector<Mesh*>& meshesToDraw);
+    void display(Camera* camPtr, WindowManager* wmPtr, std::vector<const Mesh*> meshesToDraw);
     void setSunlight(const DirLight& light);
     void destroy();
 private:
