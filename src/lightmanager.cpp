@@ -3,7 +3,7 @@
 
 void LightManager::init() {
     // Default sunlight
-    sunlight.direction = glm::normalize(glm::vec3(-0.2f, -1.0f, -0.3f));
+    sunlight.direction = glm::normalize(glm::vec3(0.0f, -0.3f, -1.0f));
     sunlight.ambient  = glm::vec3(0.2f, 0.2f, 0.2f);
     sunlight.diffuse  = glm::vec3(0.9f, 0.9f, 0.9f);
     sunlight.specular = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -44,4 +44,3 @@ void LightManager::upload(Shader& shader) {
         shader.setFloat(base + "kq", p.kq);
     }
 }
-

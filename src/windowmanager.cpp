@@ -3,6 +3,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "debug.h"
+
 static bool isHeadlessEnv() {
     const char* headless = std::getenv("KAIMICRAFT_HEADLESS");
     if (headless && headless[0] != '\0' && std::strcmp(headless, "0") != 0) {
@@ -72,13 +74,13 @@ void WindowManager::init(std::string title, DisplayMode display) {
             height = default_height;
             window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
             break;
-        default: 
+        default:
             break;
     }
     if(!window) {
         FATAL("Window creating failed");
     }
-    glfwMakeContextCurrent(window); 
+    glfwMakeContextCurrent(window);
 }
 
 void WindowManager::destroy() {

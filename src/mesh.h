@@ -16,7 +16,7 @@ constexpr int chunkLength = 16; // X
 constexpr int chunkHeight = 24 * 16; // Y (384 blocks)
 constexpr int chunkWidth = 16;  // Z
 
-constexpr int genRadius = 128;
+constexpr int genRadius = 180;
 
 //                +-----------------------+
 //               /|                      /|

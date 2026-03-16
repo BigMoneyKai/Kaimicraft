@@ -145,7 +145,6 @@ void ChunkManager::updateDynamic(const glm::vec3& camPos, TerrainGenerator* tgPt
             auto indexOf = [](int x, int y, int z) {
                 return (x * chunkHeight + y) * chunkWidth + z;
             };
-
             for (int x = 0; x < chunkLength; x++) {
                 for (int y = 0; y < chunkHeight; y++) {
                     for (int z = 0; z < chunkWidth; z++) {

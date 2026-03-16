@@ -101,8 +101,14 @@ void TimeManager::update() {
     currentSunlight.specular = lerp(a.specular, b.specular, t);
 
     float dayT = (float)(dayTime / gameDuration);
-    float angle = dayT * glm::radians(6.2831853f);
-    currentSunlight.direction = glm::normalize(glm::vec3(std::cos(angle), std::sin(angle), -0.3f));
+    float angle = dayT * 6.2831853f;
+
+    // Keep sunlight above the horizon so upward-facing surfaces receive directional diffuse.
+    // The shader uses: lightDir = normalize(-dirLight.direction)
+    float y = std::sin(angle);
+    if (y < 0.05f) y = 0.05f;
+
+    currentSunlight.direction = glm::normalize(glm::vec3(std::cos(angle), -y, -0.3f));
 }
 
 DayPhase TimeManager::phase() const {

@@ -4,10 +4,15 @@
 
 #include "light/dirlight.h"
 
-constexpr int noon = 0.1 * 60 * 60;
-constexpr int evening = 0.1 * 60 * 60;
-constexpr int night = 0.1 * 60 * 60;
-constexpr int morning = 0.1 * 60 * 60;
+constexpr int noonMin = 10;
+constexpr int eveningMin = 10;
+constexpr int nightMin = 10;
+constexpr int morningMin = 10;
+
+constexpr int noon = noonMin * 60;
+constexpr int evening = eveningMin * 60;
+constexpr int night = nightMin * 60;
+constexpr int morning = morningMin * 60;
 
 enum class DayPhase {
     Morning,
